@@ -4,9 +4,13 @@ In short, generative models belong to a class of statistical models that are cap
 
 Formally, we can think of a dataset as a sequence of instances $x_1, x_2, ..., x_n$ from a data probability distribution $p(x)$. In the example image below, the blue region represents the part of the image space that contains real images with a high probability (above some threshold), while the black dots indicate our data points (each representing an image in our dataset).
 
-<div style="text-align:center;">
+<!-- <div style="text-align:center;" >
     <img src="./images/gm.png" alt="Example Image" style="width:600px;">
-</div>
+</div> -->
+
+<p align="center">
+    <img src="./images/autoencoder_architecture.png" alt="Example Image" width="600px">
+</p>
 We can define our generative model as a probability distribution with $\theta$ parameters, denoted as $\hat p_{\theta}(x)$. It's important to note that we define this distribution using points from a Gaussian unit. Therefore, we need to find $\theta$ parameters that satisfy our requirements: generating new data $x'$ consistently.
 
 In this context, we will be creating various generative models and exploring both experimentation and theory. Let's begin by discussing the first architecture that we will be constructing.
