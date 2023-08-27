@@ -86,27 +86,54 @@ $$D_{KL}(Q(z|X) \parallel P(z)) = \frac{1}{2} \sum_{j=1}^{J} \left( 1 + \log(\si
 
 ## Variational Autoencoders
 
+A Variational Autoencoder (VAE) is a type of neural network architecture used for generative tasks, such as creating new data samples. It combines elements of both autoencoders and probabilistic modeling. In a VAE, the encoder part transforms input data into a compact representation in a lower-dimensional space, while the decoder part converts this representation back into the original data domain. The "variational" aspect comes from the inclusion of probabilistic elements that allow the model to capture the underlying distribution of the data.
+
 <p align="center">
     <img src="./images/vae.png" alt="Example Image" style="width:600px;">
 </p>
 
+The loss function of a VAE is composed of two parts: the reconstruction loss and the KL divergence. The reconstruction loss is the same as the one used in the autoencoder, and it measures how well the model is able to reconstruct the input data. The KL divergence was explained before and it just will approximate distribution in latent space. The goal of the VAE is to minimize both of these losses simultaneously.
+
+### Extra - Classification and Reconstruction (Multi-stage VAE)
+
+Until here, you see autoencoders applications with only reconstruction on output. But, we can introduce another decoder and make classification together reconstruction. It will lead us to a new concept application with autoencoder: Multi-stage autoencoder. It will be explicity in a figure below:
+
+<div style="text-align:center;">
+    <img src="./images/multi_stage_autoencoder.png" alt="Example Image" style="width:600px;">
+</div>
+
+#### Latent space effects of Multi-stage VAE
+
+Let's see effects of multi-stage VAE in latent space. We will use MNIST dataset and check this out!
+
+<div style="text-align:center;">
+    <img src="./images/latent_effects.png" alt="Example Image" style="width:600px;">
+</div>
+
+Each color represents a different class. We can see that the latent space is more organized and the classes are more separated. However, when we add classification, we can see more separatability between classes. This is very interesting because we can use this separation to make transitions between two classes without pass into another class. 
+
+Finally, when we increase $\beta$, we can see more approximation, beacause we increase the weight of KL divergence in loss function. Let's check this out!
+
+$\mathcal{L} = MSE(x, \hat x) + \beta \cdot D_{KL}(q, p) - y\log(\hat y)-(1 - y)\log(1-\hat y)$
+
 
 ## Transition between two classes
 
-Now, we have all interpolated images between 0->1, 1->2, 2->3... Remember: We calculate centroids for each class and formulate equation of a straight line,
+We now have all the interpolated images between $0 \rightarrow 1$, $1 \rightarrow 2$, $2 \rightarrow 3$, and so on. Remember: We calculate centroids for each class and formulate the equation of a straight line,
 
 $$\vec r(d) = \vec o + d \hat t$$
 
-In first transition, we use $\vec o = \vec c(0)$ and $\hat t = \frac{\vec c(1) - \vec c(0)}{||\vec c(1) - \vec c(0)||_2}$, where $\vec c(x)$ is the centroid of the number $x$. Then, we can see the gif bellow:
-
-
-<!-- <img src="output_gif.gif" width="100" align="center"> -->
+In the first transition, we use $\vec{o} = \vec{c}(0)$ and $\hat{t} = \frac{\vec{c}(1) - \vec{c}(0)}{||\vec{c}(1) - \vec{c}(0)||_2}$, where $\vec{c}(x)$ is the centroid of the number $x$ in the latent space. We simply march along the equation of a straight line, pick up some points on the line, put them into the decoder, and voilà! You can see this technique in the image below:
 
 <div style="text-align:center;">
-    <img src="output_gif.gif" alt="Example Image" style="width:100px;">
+    <img src="images/z_space_to_frames.png" alt="Example Image" style="width:720px;">
 </div>
+Then, using the idea explained before, we can construct a gif with connections between each frame. We will witness the smooth transition between classes in our dataset. See the gif below:
 
-This gif show us a beautiful animation about interpolate images that not in original dataset.
+<div style="text-align:center;">
+    <img src="output_gif_regular.gif" alt="Example Image" style="width:100px;">
+</div>
+This gif shows us a beautiful animation that interpolates images that are not in the original dataset.
 
 ## Quality Transition
 
@@ -124,3 +151,20 @@ Let's see and compare!
     <img src="output_gif_multi_stage.gif" alt="Example Image" style="width:100px;">
 </div>
 
+## Conclusions (Comparing two architectures):
+
+- There are many differents between two architetures. We reach the objective of make transitions two classes without pass into another, with multi-stage VAE we can see that. However, the image quality was decrease, probabily because we increase too much $\beta$ in KL divergence.
+
+- We need to take care about $\beta$ in KL divergence. For balance, we can introduce others hyperparameters in loss function in multi-stage case. Suggestions: start with low value hyperparameters to classification term.
+
+- Another observed effect is a little bit less capability of create new instances with diversity under our dataset.
+
+## Future Work
+
+- In the future, we will see more application using multi-stage VAE and explore your power.
+
+- We will see more about GANs and your applications.
+
+- We will see more about VAE-GANs and your applications.
+
+- We will see more about arithmetics in latent space and your applications and input features with face dataset (Deep Fake).
